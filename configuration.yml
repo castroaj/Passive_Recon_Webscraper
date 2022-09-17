@@ -1,15 +1,13 @@
 parameters:
     domain: "legacydental.net"
     recursive_depth: 1
-    link_limit: 10
+    link_limit: 3
     
     file_extractors:
       js:
-        limit: 10
-        regex: ""
+        limit: 5
 
       css:
-        limit: 10
-        regex: ""
+        limit: 5
 
 log_level: 'INFO'

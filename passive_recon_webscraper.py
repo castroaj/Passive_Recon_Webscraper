@@ -5,6 +5,8 @@ import re
 import logging
 import yaml
 
+from extractor import EXTRACTOR_TYPE
+
 VALID_EXTRACTORS = ["js", "css"]
 
 def validate_config(yaml_config:Dict[str, Any]) -> Tuple[bool, str]:
@@ -39,9 +41,6 @@ def validate_config(yaml_config:Dict[str, Any]) -> Tuple[bool, str]:
         if "limit" not in value:
             return False, field + " must have a 'limit' to be a valid configuration"
         
-        if "regex" not in value:
-            return False, field + " must have a 'regex' to be a valid configuration"
-
     return True, "VALID"
 
 def set_logger(log_level:str):
@@ -144,7 +143,7 @@ def main():
                                                                      file_extractors=config_parameters['file_extractors'])
     # ===========================
 
-    print(parser.extractors)
+    parser.run_file_extraction(types=list(parser.extractors.keys()))
 
 
 if __name__ == "__main__":
