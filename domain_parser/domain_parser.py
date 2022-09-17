@@ -2,7 +2,7 @@ from typing import List, Dict, Any
 import requests
 import bs4
 import logging
-from extractor import EXTRACTOR, EXTRACTOR_TYPE, get_extractor_type
+from domain_parser.extractor import EXTRACTOR, EXTRACTOR_TYPE, get_extractor_type
 
 class Domain_Parser:
     

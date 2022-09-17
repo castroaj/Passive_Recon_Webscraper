@@ -1,11 +1,9 @@
 from typing import Dict, Any, Tuple
 import argparse
-import domain_parser
+import domain_parser.domain_parser as domain_parser
 import re
 import logging
 import yaml
-
-from extractor import EXTRACTOR_TYPE
 
 VALID_EXTRACTORS = ["js", "css"]
 
