@@ -4,6 +4,7 @@ import domain_parser.domain_parser as domain_parser
 import re
 import logging
 import yaml
+import json
 
 VALID_EXTRACTORS = ["js", "css"]
 
@@ -19,9 +20,6 @@ def validate_config(yaml_config:Dict[str, Any]) -> Tuple[bool, str]:
 
     if "domain" not in parameters:
         return False, "Configuration file is missing lvl-2 'domain' field"
-
-    if "recursive_depth" not in parameters:
-        return False, "Configuration file is missing lvl-2 'recursive_depth' field"
 
     if "link_limit" not in parameters:
         return False, "Configuration file is missing lvl-2 'link_limit' field"
@@ -66,6 +64,8 @@ def validate_domain(raw_domain:str) -> str:
         return None
     
     if str(match.string).__contains__("http://"):
+        return str(match.string)
+    elif str(match.string).__contains__("https://"):
         return str(match.string)
     else:
         return "http://" + str(match.string)
@@ -136,12 +136,22 @@ def main():
     # Build out the domain parser
     # ===========================
     parser:domain_parser.Domain_Parser = domain_parser.Domain_Parser(domain=processed_domain,
-                                                                     depth=config_parameters['recursive_depth'],
                                                                      link_limit=config_parameters['link_limit'],
                                                                      file_extractors=config_parameters['file_extractors'])
     # ===========================
 
+    # Run the file extraction and store all files as
+    # cached data
+    # ==============================================
     parser.run_file_extraction(types=list(parser.extractors.keys()))
+    # ==============================================
+
+    # Extract comments from all of the files
+    # ======================================
+    parser.extract_comments(types=list(parser.extractors.keys()))
+    # ======================================
+
+    print(json.dumps(parser.comments, indent=4))
 
 
 if __name__ == "__main__":

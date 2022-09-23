@@ -1,6 +1,5 @@
 parameters:
-    domain: "legacydental.net"
-    recursive_depth: 1
+    domain: "https://linktr.ee"
     link_limit: 3
     
     file_extractors:
