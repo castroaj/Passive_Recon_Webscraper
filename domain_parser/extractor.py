@@ -6,8 +6,8 @@ import re
 import logging
 
 class EXTRACTOR_TYPE(Enum):
-    JS = ("js", "JAVASCRIPT", ".*")
-    CSS = ("css", "CSS (Cascading Style Sheets)", ".*")
+    JS = ("js", "JAVASCRIPT", "(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*/|\n//)")
+    CSS = ("css", "CSS (Cascading Style Sheets)", "(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*/)")
 
 def get_extractor_type(type_string:str) -> EXTRACTOR_TYPE:
 
@@ -70,12 +70,12 @@ class EXTRACTOR():
             for filename in filenames:
                 cache_filename:str = self.working_dir + "/" + self.type.value[0] + "/" + str(domain_id) + "_" + str(file_id) + "." + self.type.value[0]
                 
+                if filename.startswith("/"):
+                    filename = domain + filename
+
                 try:
                     wget.download(filename, out=cache_filename)
                 except:
-                    print()
-                    self.logger.error("FAILED TO DOWNLOAD FILE: " + filename)
-                    print()
                     continue
 
                 self.domain_paths[domain][filename] = cache_filename
@@ -89,13 +89,16 @@ class EXTRACTOR():
             self.domain_comments[domain] = {}
             for filename, path in paths.items():
 
-                # Read all of the file data
-                # =========================
-                file_data:str
-                with open(path, "r") as file:
-                    file_data = file.read()
-                # =========================
+                try:
+                    # Read all of the file data
+                    # =========================
+                    file_data:str
+                    with open(path, "r") as file:
+                        file_data = file.read()
+                    # =========================
 
-                self.domain_comments[domain][filename] = re.findall(self.type.value[2], file_data)
-
+                    matches = re.findall(self.type.value[2], file_data)
+                    self.domain_comments[domain][filename] = matches
+                except:
+                    continue
 

@@ -1,6 +1,6 @@
 parameters:
-    domain: "https://linktr.ee"
-    link_limit: 3
+    domain: "https://blend.com"
+    link_limit: 15
     
     file_extractors:
       js:

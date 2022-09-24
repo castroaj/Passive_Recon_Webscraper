@@ -71,7 +71,8 @@ class Domain_Parser:
         urls.add(self.domain)
         
         self.logger.info("EXTRACTING LINKS FROM " + self.domain)
-
+    
+    
         response:requests.Response = requests.get(self.domain)
         b_soup:bs4.BeautifulSoup = bs4.BeautifulSoup(response.text, "html.parser")
         
@@ -107,8 +108,12 @@ class Domain_Parser:
             # Retrieve file data from the domain and build an html parser for it
             # ==================================================================
             self.logger.debug("PROCESSING " + domain)
-            response:requests.Response = requests.get(domain)
-            b_soup:bs4.BeautifulSoup = bs4.BeautifulSoup(response.text, "html.parser")
+
+            try:
+                response:requests.Response = requests.get(domain)
+                b_soup:bs4.BeautifulSoup = bs4.BeautifulSoup(response.text, "html.parser")
+            except:
+                continue
             # ==================================================================
 
             # HANDLE JAVASCRIPT
@@ -116,7 +121,7 @@ class Domain_Parser:
             if extractor_type == EXTRACTOR_TYPE.JS:
                 for script in b_soup.find_all("script"):
 
-                    if len(domain_files) >= limit:
+                    if len(domain_files) > limit:
                         break
 
                     if script.attrs.get("src"):
@@ -128,7 +133,7 @@ class Domain_Parser:
             elif extractor_type == EXTRACTOR_TYPE.CSS:
                 for css in b_soup.find_all("link"):
 
-                    if len(domain_files) >= limit:
+                    if len(domain_files) > limit:
                         break
 
                     if css.attrs.get("rel").__contains__('stylesheet'):

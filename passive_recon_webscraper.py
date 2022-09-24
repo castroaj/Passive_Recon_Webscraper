@@ -151,7 +151,10 @@ def main():
     parser.extract_comments(types=list(parser.extractors.keys()))
     # ======================================
 
+    # Output all comments
+    # ===================
     print(json.dumps(parser.comments, indent=4))
+    # ===================
 
 
 if __name__ == "__main__":
